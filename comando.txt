@@ -1,0 +1,3 @@
+docker build -t keycloak-spi:26.1.0 .
+
+LUEGO SE TIENE QUE MODIFICAR EL YAML
