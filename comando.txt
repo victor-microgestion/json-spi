@@ -1,3 +1,7 @@
-docker build -t keycloak-spi:26.1.0 .
+docker build -t keycloak-custom-spi:local-dev .
+
+DESPUES SE TIENE QUE SUBIR LOCALMENTE:
+
+kind load docker-image --name kind-kc-single-node keycloak-custom-spi:local-dev
 
 LUEGO SE TIENE QUE MODIFICAR EL YAML
