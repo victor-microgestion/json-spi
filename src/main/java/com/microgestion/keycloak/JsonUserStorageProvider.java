@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class JsonUserStorageProvider implements UserStorageProvider,
-        UserLookupProvider, CredentialInputValidator {
+        UserLookupProvider/* , CredentialInputValidator*/ {
 
     private final KeycloakSession session;
     private final ComponentModel model;
@@ -38,8 +38,17 @@ public class JsonUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
-        if (!userData.containsKey(username)) return null;
-        return loadedUsers.computeIfAbsent(username, u -> createAdapter(realm, u));
+        System.out.println("Intento buscar....");
+        //if (!userData.containsKey(username)) return null;
+        //UserModel user = session.users().getUserByUsername(realm, username);
+        //UserModel user = session.users().getUserByUsername(realm, "");
+        //if( user == null ){
+            //System.out.println("Debo agregar");
+            //return loadedUsers.computeIfAbsent(username, u -> createAdapter(realm, u)); //Cargo el usuario del json
+        //}
+        //return user;
+        //session.users().addUser(realm, username, username, false, false);
+        return null;
     }
 
     @Override
@@ -53,7 +62,7 @@ public class JsonUserStorageProvider implements UserStorageProvider,
         return null;
     }
 
-    private UserModel createAdapter(RealmModel realm, String username) {
+    /*private UserModel createAdapter(RealmModel realm, String username) {
         return new AbstractUserAdapter(session, realm, model) {
             @Override
             public String getUsername() {
@@ -70,9 +79,9 @@ public class JsonUserStorageProvider implements UserStorageProvider,
                 return new UserCredentialManager(session, realm, this);
             }
         };
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean supportsCredentialType(String credentialType) {
         return CredentialModel.PASSWORD.equals(credentialType);
     }
@@ -88,6 +97,8 @@ public class JsonUserStorageProvider implements UserStorageProvider,
         if (!supportsCredentialType(input.getType())) return false;
         String provided = input.getChallengeResponse();
         String stored = userData.get(user.getUsername());
+        session.users().addUser(realm, stored);
+        //session.users().
         return stored != null && stored.equals(provided);
-    }
+    }*/
 }
