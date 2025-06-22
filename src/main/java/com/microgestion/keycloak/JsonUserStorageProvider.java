@@ -7,6 +7,7 @@ import org.keycloak.credential.UserCredentialManager;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.UserLookupProvider;
@@ -38,7 +39,7 @@ public class JsonUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
-        if (!userData.containsKey(username)) return null;
+        if (!userData.containsKey(username)) return null;        
         return loadedUsers.computeIfAbsent(username, u -> createAdapter(realm, u));
     }
 
@@ -88,6 +89,7 @@ public class JsonUserStorageProvider implements UserStorageProvider,
         if (!supportsCredentialType(input.getType())) return false;
         String provided = input.getChallengeResponse();
         String stored = userData.get(user.getUsername());
+        session.users().addUser(realm, stored);
         return stored != null && stored.equals(provided);
     }
 }
