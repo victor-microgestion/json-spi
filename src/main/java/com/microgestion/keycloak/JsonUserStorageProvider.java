@@ -26,7 +26,7 @@ public class JsonUserStorageProvider implements UserStorageProvider,
     private final Map<String, UserModel> loadedUsers = new ConcurrentHashMap<>();
 
     public JsonUserStorageProvider(KeycloakSession session, ComponentModel model,
-                                   Map<String, String> userData) {
+            Map<String, String> userData) {
         this.session = session;
         this.model = model;
         this.userData = userData;
@@ -39,7 +39,8 @@ public class JsonUserStorageProvider implements UserStorageProvider,
 
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
-        if (!userData.containsKey(username)) return null;        
+        if (!userData.containsKey(username))
+            return null;
         return loadedUsers.computeIfAbsent(username, u -> createAdapter(realm, u));
     }
 
@@ -86,10 +87,38 @@ public class JsonUserStorageProvider implements UserStorageProvider,
 
     @Override
     public boolean isValid(RealmModel realm, UserModel user, CredentialInput input) {
-        if (!supportsCredentialType(input.getType())) return false;
+        if (!supportsCredentialType(input.getType()))
+            return false;
         String provided = input.getChallengeResponse();
         String stored = userData.get(user.getUsername());
-        session.users().addUser(realm, stored);
+        //session.users().addUser(realm, stored);
+        this.createUser(session, realm, user.getUsername(), stored);
         return stored != null && stored.equals(provided);
+    }
+
+    /**
+     * Crea un nuevo usuario con nombre y contraseña en un realm específico.
+     *
+     * @param session La sesión actual de Keycloak.
+     * @param realm El realm donde se creará el usuario.
+     * @param username El nombre de usuario deseado.
+     * @param password La contraseña en texto plano para el nuevo usuario.
+     * @return El UserModel del usuario creado.
+     */
+    public void createUser(KeycloakSession session, RealmModel realm, String username, String password) {
+
+        // 1. Crear la instancia del usuario.
+        UserModel user = session.users().addUser(realm, username);
+
+        // 2. Establecer propiedades básicas.
+        user.setEnabled(true);
+
+        // 3. Crear el CredentialInput usando el factory method de UserCredentialModel.
+        CredentialInput passwordCredential = UserCredentialModel.password(password);
+
+        // 4. Establecer la contraseña para el usuario usando el CredentialManager.
+        user.credentialManager().updateCredential(passwordCredential);
+
+        System.out.println("Usuario '" + username + "' creado exitosamente.");
     }
 }
