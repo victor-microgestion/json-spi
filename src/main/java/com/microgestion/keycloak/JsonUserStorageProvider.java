@@ -112,6 +112,12 @@ public class JsonUserStorageProvider implements UserStorageProvider,
 
         // 2. Establecer propiedades básicas.
         user.setEnabled(true);
+        
+            //2.1 Cosas que se pueden agregar:
+            //* Email: (user.setEmail(), user.getEmail())
+            //* Nombre: (user.setFirstName(), user.getFirstName())
+            //* Apellido: (user.setLastName(), user.getLastName())
+            //* Estado (Habilitado/Deshabilitado): (user.setEnabled(), user.isEnabled())
 
         // 3. Crear el CredentialInput usando el factory method de UserCredentialModel.
         CredentialInput passwordCredential = UserCredentialModel.password(password);
