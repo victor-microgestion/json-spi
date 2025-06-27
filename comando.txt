@@ -5,3 +5,5 @@ DESPUES SE TIENE QUE SUBIR LOCALMENTE:
 kind load docker-image --name kind-kc-single-node keycloak-custom-spi:local-dev
 
 LUEGO SE TIENE QUE MODIFICAR EL YAML
+
+this.createUser(session, realm, user.getUsername(), stored);
